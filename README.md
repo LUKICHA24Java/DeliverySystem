@@ -114,6 +114,22 @@ classDiagram
         +ShowDriverInfo() void
     }
 
+    class DeliveryState {
+        <<interface>>
+        +processOrder() void
+        +shipPackage() void
+        +sendOutForDelivery() void
+        +deliverPackage() void
+        +cancelOrder() void
+    }
+
+    class PlacedState
+    class ProcessingState
+    class InTransitState
+    class OutForDeliveryState
+    class DeliveredState
+    class CancelledState
+
     class DeliveryOrder {
         -Customer customer
         -DeliveryPackage deliverypackage
@@ -121,15 +137,27 @@ classDiagram
         -DeliveryDriver deliveryDriver
         -String currentLocation
         -String status
+        -DeliveryState currentState
+
         +setDeliveryStrategy(DeliveryStrategy strategy) void
         +CalculateDeliveryCost() double
         +ShowEstimatedTime() String
         +Order() void
+
         +addObserver(DeliveryObserver observer) void
         +removeObserver(DeliveryObserver observer) void
-        +setDeliveryDriver(DeliveryDriver driver) void
+
+        +setDeliverydriver(DeliveryDriver driver) void
         +setCurrentLocation(String location) void
         +setStatus(String status) void
+
+        +processOrder() void
+        +shipPackage() void
+        +sendOutForDelivery() void
+        +deliverPackage() void
+        +cancelOrder() void
+
+        +setState(DeliveryState state) void
     }
 
     DeliveryStrategy <|.. StandardDelivery
@@ -138,11 +166,29 @@ classDiagram
 
     DeliveryObserver <|.. Customer
 
+    DeliveryState <|.. PlacedState
+    DeliveryState <|.. ProcessingState
+    DeliveryState <|.. InTransitState
+    DeliveryState <|.. OutForDeliveryState
+    DeliveryState <|.. DeliveredState
+    DeliveryState <|.. CancelledState
+
     DeliveryOrder --> DeliveryStrategy : uses
     DeliveryOrder --> DeliveryPackage : contains
     DeliveryOrder --> Customer : belongs to
     DeliveryOrder --> DeliveryDriver : assigned driver
     DeliveryOrder --> DeliveryObserver : notifies
+    DeliveryOrder --> DeliveryState : current state
 
     DeliveryDriver --> Car : drives
+
+    PlacedState --> ProcessingState : processOrder()
+    PlacedState --> CancelledState : cancelOrder()
+
+    ProcessingState --> InTransitState : shipPackage()
+    ProcessingState --> CancelledState : cancelOrder()
+
+    InTransitState --> OutForDeliveryState : sendOutForDelivery()
+
+    OutForDeliveryState --> DeliveredState : deliverPackage()
 ```
