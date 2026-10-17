@@ -52,18 +52,28 @@ public class Main {
         order.Order();
 
 
-        System.out.println("\n--- Delivery Updates ---");
+        System.out.println();
+        System.out.println("--- Delivery Updates ---");
 
         order.setDeliverydriver(driver);
 
-        order.setStatus("Package received at warehouse");
-
         order.setCurrentLocation("Tbilisi Distribution Center");
 
-        order.setStatus("Out for delivery");
+
+        System.out.println();
+        System.out.println("--- Delivery State Changes ---");
+
+        order.processOrder();
+
+        order.shipPackage();
+
+        order.sendOutForDelivery();
+
+        order.deliverPackage();
 
 
-        System.out.println("\n--- Changing Delivery Strategy ---");
+        System.out.println();
+        System.out.println("--- Changing Delivery Strategy ---");
 
         order.setDeliveryStrategy(new ExpressDelivery());
 

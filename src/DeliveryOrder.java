@@ -7,12 +7,30 @@ public class DeliveryOrder {
     private DeliveryStrategy deliverystrategy;
     private DeliveryDriver deliverydriver;
 
+    private DeliveryState placedState;
+    private DeliveryState processingState;
+    private DeliveryState inTransitState;
+    private DeliveryState outForDeliveryState;
+    private DeliveryState deliveredState;
+    private DeliveryState cancelledState;
+
+    private DeliveryState currentState;
+
     private String CurrentLocation;
     private String status;
 
     private List<DeliveryObserver> observers =  new ArrayList<>();
 
     public DeliveryOrder(DeliveryPackage deliverypackage, DeliveryStrategy deliverystrategy, Customer customer){
+        placedState = new PlacedState(this);
+        processingState = new ProcessingState(this);
+        inTransitState = new InTransitState(this);
+        outForDeliveryState = new OutForDeliveryState(this);
+        deliveredState = new DeliveredState(this);
+        cancelledState = new CancelledState(this);
+
+        currentState = placedState;
+
         this.deliverypackage = deliverypackage;
         this.deliverystrategy = deliverystrategy;
         this.customer = customer;
@@ -104,6 +122,54 @@ public class DeliveryOrder {
     public DeliveryStrategy getDeliveryStrategy() {
         return deliverystrategy;
     }
+
+    public void processOrder(){
+        currentState.processOrder();
+    }
+
+    public void shipPackage(){
+        currentState.shipPackage();
+    }
+
+    public void sendOutForDelivery(){
+        currentState.sendOutForDelivery();
+    }
+
+    public void deliverPackage(){
+        currentState.deliverPackage();
+    }
+
+    public void cancelOrder(){
+        currentState.cancelOrder();
+    }
+    public void SetState(DeliveryState state){
+        currentState = state;
+    }
+
+    public DeliveryState getPlacedState(){
+        return placedState;
+    }
+
+    public DeliveryState getProcessingState(){
+        return processingState;
+    }
+
+    public DeliveryState getInTransitState(){
+        return inTransitState;
+    }
+
+    public DeliveryState getOutForDeliveryState(){
+        return outForDeliveryState;
+    }
+
+    public DeliveryState getDeliveredState(){
+        return deliveredState;
+    }
+
+    public DeliveryState getCancelledState(){
+        return cancelledState;
+    }
+
 
 
 
